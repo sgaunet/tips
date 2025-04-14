@@ -1,0 +1,20 @@
+# https://taskfile.dev
+version: '3'
+
+tasks:
+  # install hooks
+  install-pre-commit:
+    desc: "Install pre-commit hooks"
+    cmds:
+      - pre-commit install
+
+  pre-commit:
+    desc: "Run pre-commit hooks"
+    cmds:
+      - pre-commit run --all-files
+
+
+---
+# Add in Taskfile.yml
+includes:
+  dev: ./Taskfile_dev.yml
