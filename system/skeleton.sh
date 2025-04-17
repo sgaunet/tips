@@ -9,15 +9,15 @@ function print_var() {
 }
 
 function __msg_error() {
-    gum log -l error -t DateTime "$1"
+    gum log -l error -t rfc3339 "$1"
 }
 
 function __msg_debug() {
-    gum log -l debug -t DateTime "$1"
+    gum log -l debug -t rfc3339 "$1"
 }
 
 function __msg_info() {
-    gum log -l info -t DateTime "$1"
+    gum log -l info -t rfc3339 "$1"
 }
 
 function handle_exit() {
