@@ -34,5 +34,7 @@
     "go.formatFlags": [
         "fmt",
         "--stdin"
-    ]
+    ],
+    "editor.formatOnSave": true,
+    "files.trimTrailingWhitespace": true
 }
