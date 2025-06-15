@@ -1,0 +1,16 @@
+gh issue create --title "Update description of the project" --body "Everything is on in the title" --assignee @me --label "bug" 
+gh issue create --title "Update tags of the project" --body "Everything is on in the title" --assignee @me
+gh issue create --title "Update labels" --body "Everything is in the title" --assignee @me
+gh issue create --title "Update badges" --body "Take example on the project https://github.com/sgaunet/calcdate" --assignee @me
+gh issue create --title "Add coverage CI" --body "Add a coverage in the CI with badge" --assignee @me
+gh issue create --title "Add golangci-lint" --body "Add golangci-lint as linter to this project" --assignee @me
+gh issue create --title "Upgrade golangci-lint to v2" --body "upgrade golangci-lint to v2" --assignee @me
+gh issue create --title "Add CI" --body "To build/push the project" --assignee @me
+gh issue create --title "Use ghcr.io repository for the docker image" --body "Use github to share the docker image. Don't forget to update the helm charat if it exists." --assignee @me
+gh issue create --title "Add a README.md" --body "Add a README.md to the project" --assignee @me
+gh issue create --title "Add a LICENSE" --body "Add a LICENSE to the project" --assignee @me
+gh issue create --title "Add dependabot" --body "Add dependabot to the project" --assignee @me
+gh issue create --title "Specify the priority of the project" --body "Use this examples if needed: https://github.com/sgaunet/tips/tree/main/README" --assignee @me
+
+gh issue create --title "Add status of CI in the README" --body "example here https://github.com/sgaunet/gobadger" --assignee @me
+gh issue create --title "Fix the badge LICENSE in the README" --body "Everything is in the title" --assignee @me
