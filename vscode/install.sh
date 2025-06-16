@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+#!/usr/bin/env bash
 #code --extensions-dir <dir>
 #    Set the root path for extensions.
 #code --list-extensions
@@ -32,3 +32,8 @@ code --install-extension ms-vscode-remote.vscode-remote-extensionpack
 code --install-extension timonwong.shellcheck
 code --install-extension task.vscode-task
 code --install-extension griimick.vhs
+code --install-extension johnpapa.vscode-peacock
+code --install-extension usernamehw.errorlens
+code --install-extension kruemelkatze.vscode-dashboard
+code --install-extension donjayamanne.githistory
+code --install-extension terrastruct.d2
