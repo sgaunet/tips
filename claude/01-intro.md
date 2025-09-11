@@ -1,6 +1,12 @@
 
 CLAUDE.md is the main documentation file for the Claude project. It provides an overview of the project, its features, and how to use it.
 
+Claude Code hooks are configured in your settings files:
+
+    ~/.claude/settings.json - User settings
+    .claude/settings.json - Project settings
+    .claude/settings.local.json - Local project settings (not committed)
+
 In CLAUDE.md, you can also reference other markdown files using the @ symbol:
 
 ## Imports
