@@ -1,0 +1,42 @@
+title = "Claude Code Security Scanner"
+
+# Extend the base rules
+[extend]
+useDefault = true
+
+# Add custom rules for your specific needs
+[[rules]]
+id = "custom-api-key"
+description = "Custom API Key Pattern"
+regex = '''(?i)(api[_\-\s]?key|apikey|api_secret)['"]?\s*[:=]\s*['"]?([a-zA-Z0-9\-_]{20,})['"]?'''
+tags = ["key", "API", "custom"]
+
+[[rules]]
+id = "database-connection-string"
+description = "Database Connection String"
+regex = '''(?i)(mongodb|postgres|postgresql|mysql|mssql|oracle|redis):\/\/[^:]+:[^@]+@[^\/]+'''
+tags = ["database", "connection"]
+
+[[rules]]
+id = "jwt-token"
+description = "JWT Token"
+regex = '''eyJ[a-zA-Z0-9_-]*\.eyJ[a-zA-Z0-9_-]*\.[a-zA-Z0-9_-]*'''
+tags = ["jwt", "token"]
+
+# Allow list for false positives
+[allowlist]
+description = "Global allow list"
+paths = [
+    '''\.md$''',  # Markdown files often have example keys
+    '''\.test\..*$''',  # Test files
+    '''__tests__/.*''',  # Test directories
+    '''\.example$''',  # Example files
+]
+
+# You can also allow specific commits or lines
+[[allowlist.commits]]
+commits = []
+
+[[allowlist.regexes]]
+regex = '''example|sample|test|demo|fake|dummy'''
+description = "Ignore example/test credentials"
