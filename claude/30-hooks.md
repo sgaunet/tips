@@ -69,3 +69,8 @@ Use Cases
 Stop hooks can prevent Claude from stopping by returning the right exit code. This lets you build complex, multi-step workflows.
 
 Now that we understand the different types of hooks, let's create our first hook.
+
+## Resources
+
+* https://github.com/disler/claude-code-hooks-mastery
+*
