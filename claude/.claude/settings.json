@@ -10,9 +10,8 @@
     ],
     "deny": [
       "Read(**.env)",
-      "Read(**credentials**)",
-      "Read(./dist/**)",
-      "Read(**vault**)",
+      "Read(**credentials*)",
+      "Read(**vault*)",
     ]
   },
   "statusLine": {
@@ -20,6 +19,24 @@
     "command": "npx -y ccstatusline@latest",
     "padding": 0
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ~/.claude/hooks/gitleaks_security_hook.py",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
+  "memories": [
+    "Security: All files are automatically scanned for API credentials and secrets before processing.",
+    "If a security warning appears, remove sensitive information from files before retrying."
+  ],
   "feedbackSurveyState": {
     "lastShownTime": 1754081029055
   },
