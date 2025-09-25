@@ -31,14 +31,21 @@
           }
         ]
       }
+    ],
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Funk.aiff"
+          }
+        ]
+      }
     ]
   },
   "memories": [
     "Security: All files are automatically scanned for API credentials and secrets before processing.",
     "If a security warning appears, remove sensitive information from files before retrying."
   ],
-  "feedbackSurveyState": {
-    "lastShownTime": 1754081029055
-  },
   "model": "sonnet"
 }
