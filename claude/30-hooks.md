@@ -73,4 +73,48 @@ Now that we understand the different types of hooks, let's create our first hook
 ## Resources
 
 * https://github.com/disler/claude-code-hooks-mastery
-*
+
+
+## Examples
+
+### Notification Hook Example (MacOS)
+
+macOS: use `afplay` to play a sound
+
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "afplay /System/Library/Sounds/Funk.aiff"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+### Notification Hook Example (Linux)
+
+linux: use `paplay` to play a sound
+
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "paplay /usr/share/sounds/freedesktop/stereo/message.oga"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
