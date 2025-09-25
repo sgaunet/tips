@@ -5,6 +5,7 @@
 	$ go get tool github.com/matryer/moq
 	$ go get tool github.com/sqlc-dev/sqlc/cmd/sqlc@v1.28.0
 	$ go get tool github.com/a-h/templ/cmd/templ
+	$ go get tool github.com/swaggo/swag/cmd/swag
 ```
 
 ```go
@@ -14,10 +15,14 @@ tool (
 	github.com/matryer/moq
 	github.com/sqlc-dev/sqlc/cmd/sqlc
 	github.com/a-h/templ/cmd/templ
+	github.com/swaggo/swag/cmd/swag
 )
 ```
 
 ```go
+// swaggo
+//go:generate go tool github.com/swaggo/swag/cmd/swag init -d .,../../ -o ../../internal/docs --parseDependency
+
 // templ
 //go:generate go tool github.com/a-h/templ/cmd/templ generate
 
