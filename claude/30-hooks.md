@@ -98,6 +98,30 @@ macOS: use `afplay` to play a sound
 }
 ```
 
+or use `terminal-notifier` to send a desktop notification
+Install terminal-notifier with Homebrew if you don't have it:
+
+```bash
+brew install terminal-notifier
+```
+
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "terminal-notifier -message 'Claude has finished its task!' -title 'Claude Notification' -sound Glass"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
 ### Notification Hook Example (Linux)
 
 linux: use `paplay` to play a sound
@@ -111,6 +135,25 @@ linux: use `paplay` to play a sound
           {
             "type": "command",
             "command": "paplay /usr/share/sounds/freedesktop/stereo/message.oga"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Or use `notify-send` to send a desktop notification
+
+```json
+{
+  "hooks": {
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "notify-send -u critical 'Important' 'Claude has finished its task!'"
           }
         ]
       }
