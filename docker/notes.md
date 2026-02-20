@@ -25,6 +25,10 @@ LABEL org.opencontainers.image.created="${BUILD_DATE}"
 
 ## Multi-Architecture Builds with Buildx
 
+```bash
+docker run --privileged --rm tonistiigi/binfmt --install all
+```
+
 ### Setup Builder
 ```bash
 # Create multi-arch builder
