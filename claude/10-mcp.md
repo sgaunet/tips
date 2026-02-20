@@ -18,25 +18,10 @@ claude mcp remove my-server
 
 ## Add a new server with a specific command and environment variable
 
-### github mcp server (stdio / need the binary installed)
-
-```bash
-# Github MCP server https://github.com/github/github-mcp-server
-# Install https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md
-claude mcp add github -s user -- github-mcp-server stdio --env GITHUB_PERSONAL_ACCESS_TOKEN=$GITHUB_TOKEN # need local binary setup
-```
-
 ### github mcp server (http / no need the binary installed)
 
 ```bash
 claude mcp add --transport http github https://api.githubcopilot.com/mcp -H "Authorization: Bearer $GITHUB_TOKEN"
-```
-
-### taskmaster
-
-```bash
-# taskmaster: https://github.com/eyaltoledano/claude-task-master
-claude mcp add taskmaster -s user -- npx -y @eyaltoledano/claude-task-master
 ```
 
 ### context7
@@ -53,12 +38,29 @@ claude mcp add --transport http context7 https://api.context7.com
 claude mcp add gitlab-mcp -s user -- gitlab-mcp
 ```
 
-### playwright-mcp-server
+### playwright-cli (token efficient compared to mcp server)
 
-URL: https://github.com/microsoft/playwright-mcp
+```bash
+# playwright-cli:
+npm install -g @playwright/cli@latest
+playwright-cli --help
+playwright-cli install --skills
+```
+
+### playwright-mcp-server (need chrome installed and extension added to the browser)
+
+* URL: https://github.com/microsoft/playwright-mcp
+* extension: https://chromewebstore.google.com/detail/playwright-mcp-bridge/mmlmfjhmonkocbjadbfplnigmagldckm
+
 ```bash
 # playwright-mcp-server
 claude mcp add playwright npx @playwright/mcp@latest
+```
+
+### atlassian mcp server
+
+```bash
+claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp
 ```
 
 ### postgresql-mcp
@@ -81,15 +83,6 @@ Another solution to get help from Claude about SQL is to use the tool tbls: http
 tbls doc --rm-dist --dsn "postgresql://postgres:password@localhost:5432/postgres?sslmode=disable"
 ## will generate a dbdoc folder with documentation of your database
 ```
-
-
-## List of useful MCP servers
-
-Puppeteer-MCP: Enables LLMs to control and interact with web browsers using Puppeteer. This opens up possibilities for web scraping, automated testing, and generating web-based reports.
-
-Jupyter-MCP: Could allow LLMs to interact with Jupyter notebooks, potentially executing code, analyzing results, or extracting insights from notebooks.
-
-Jira-MCP: Enables LLMs to interact with Jira project management software. This could be used for retrieving issue details, tracking progress, or even creating new tickets.
 
 ## Resources
 
