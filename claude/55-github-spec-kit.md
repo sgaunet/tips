@@ -17,17 +17,14 @@ Then use the tool directly:
 
 ```bash
 specify version
-specify init <PROJECT_NAME>
-# Or initialize in the current directory
-specify init . --ai copilot
-specify init --here --ai copilot
-specify check
-```
 
-One-time usage without installing:
 
 ```bash
-uvx --from git+https://github.com/github/spec-kit.git@vX.Y.Z specify init <PROJECT_NAME>
+specify init --here --ai claude
+```
+
+```bash
+specify check
 ```
 
 To upgrade specify run:
@@ -43,7 +40,13 @@ Launch your AI assistant in the project directory. Claude Code exposes spec-kit 
 Use the **`/speckit-constitution`** command to create your project's governing principles and development guidelines that will guide all subsequent development.
 
 ```bash
-/speckit-constitution Prefer a simple, modular monolith over microservices unless there is a clear, documented need to split.
+/speckit-constitution <constitution principles>
+```
+
+Example principles:
+
+```
+Prefer a simple, modular monolith over microservices unless there is a clear, documented need to split.
 
 Keep the dependency graph shallow; avoid unnecessary frameworks and heavy abstraction layers.
 
@@ -94,7 +97,125 @@ The AI assistant must preserve these principles when generating specs, plans, an
 
 Any suggestion that violates these principles (e.g., unnecessary microservices, over-engineered patterns, lack of tests) must be revised to comply.
 
-When in doubt, the assistant should choose simpler designs, fewer dependencies, and more tests
+When in doubt, the assistant asks the end user somes questions to help to find the good solutions and should choose simpler designs, fewer dependencies, and more tests
+```
+
+### Constitution examples by project type
+
+Below are compact, ready-to-paste constitutions tailored to the kinds of projects you build most often. Pick the one that matches and pass it to `/speckit-constitution`. Tune individual bullets to the project at hand.
+
+#### Go CLI
+
+```
+**Scope**
+- Single static binary, no runtime dependencies; cross-compile via goreleaser.
+- Stay a tool, not a framework: one focused job per binary, composable via pipes.
+
+**Code quality**
+- `gofmt`, `go vet`, `staticcheck` clean; idiomatic Go (small interfaces, errors as values).
+- Commands are thin wrappers (cobra or stdlib `flag`); business logic lives in plain packages with no CLI imports.
+- Errors wrap with `fmt.Errorf("...: %w", err)`; the final user-facing message says what failed and how to fix it.
+
+**UX**
+- Stdout = data (machine-parseable, `--output=text|json`); stderr = humans (logs, errors, progress).
+- Exit codes are meaningful and documented (`0` ok, `1` generic failure, `2` usage error, `≥10` domain-specific).
+- Respect `NO_COLOR`, `--quiet`, `--verbose`; never assume a TTY when output is piped.
+- Config precedence is documented: flags > env vars > config file > defaults.
+- Destructive actions require `--yes` or an interactive confirmation; `--help` is complete and accurate.
+
+**Reliability**
+- Long-running operations honor `context.Context` and cancel cleanly on `SIGINT`/`SIGTERM`.
+- All I/O has timeouts; retries are bounded with backoff.
+
+**Testing & release**
+- Unit tests cover argument parsing, exit codes, and stdout/stderr separation; integration tests invoke the built binary.
+- Releases via `goreleaser` with checksums and SBOM; binaries reproducible.
+```
+
+#### Go HTTP/REST API
+
+```
+**Architecture**
+- Standard library `net/http` plus a lightweight router (`chi` or similar); avoid heavyweight frameworks.
+- Handlers are thin; business logic lives in domain packages decoupled from `http`, storage, and transport.
+- Versioned routes (`/v1/...`); breaking changes bump the version — never silently mutate a released contract.
+
+**Code quality**
+- `gofmt`, `go vet`, `staticcheck` clean; idiomatic Go.
+- Errors wrap with `%w`; no silent failures.
+
+**API contract**
+- Request validation at the boundary; structured error responses with stable codes (RFC 7807 `application/problem+json` or an equivalent in-house shape).
+- Consistent resource naming, pagination, and filtering conventions across endpoints.
+- Auth and authz enforced in middleware, not inside handlers.
+
+**Reliability & observability**
+- Every handler receives a `context.Context` carrying request ID, deadline, and cancellation; propagated to all I/O.
+- Outbound calls (DB, HTTP, queues) have timeouts and bounded retries with backoff.
+- Structured logging (`slog`) with request ID, route, status, latency; no secrets in logs.
+- Prometheus metrics, `/healthz` and `/readyz` endpoints, OpenTelemetry tracing where available.
+
+**Data**
+- Migrations are versioned, idempotent, and reversible when feasible using a migration tool like `goose` or `migrate` or `dbmate`; applied automatically on startup with a lock to prevent concurrent runs.
+- use sqlc for type-safe SQL queries; use query builders only when dynamic query generation is required.
+
+
+**Testing & performance**
+- Table-driven handler tests with `httptest`; integration tests run against a real database (Testcontainers / docker compose), not mocks.
+- P95 latency targets documented per critical endpoint; load tests for the hot paths.
+```
+
+#### Bash script — Linux only
+
+```
+**Shape**
+- Shebang `#!/usr/bin/env bash`; bash 4+ features (associative arrays, `mapfile`) are allowed.
+- Strict mode at top: `set -Eeuo pipefail` and `IFS=$'\n\t'`.
+- `main "$@"` pattern; no top-level side effects so the script is safe to `source` for testing.
+- Functions for anything used twice; keep the script under ~300 lines or split into a small library.
+
+**Quality**
+- `shellcheck` clean — disabled warnings require an inline justifying comment.
+- All variables quoted (`"$var"`, `"${arr[@]}"`); use `[[ ... ]]` over `[ ... ]`.
+
+**UX**
+- `--help` and `--version` flags; usage printed on bad invocation; meaningful, documented exit codes.
+- Errors to stderr via a `log_err()` helper; success data to stdout; respect `--quiet` / `--verbose`.
+- Long-running steps log progress with timestamps.
+
+**Safety**
+- Trap `ERR` and `EXIT` to clean up temp files (`mktemp -d`) and partial state.
+- No `curl | bash` of remote scripts; pin URLs and verify checksums for anything downloaded.
+- Destructive operations require `--yes` or an interactive confirmation.
+
+**Testing**
+- `bats` (or equivalent) covers the happy path and key failure modes; CI runs `shellcheck` plus the test suite on the target distro.
+```
+
+#### Bash script — Linux + macOS portable
+
+```
+**Shape**
+- Shebang `#!/usr/bin/env bash`; target bash 3.2 (macOS default) — no associative arrays, no `mapfile`, no `${var^^}`. Gate on `BASH_VERSINFO` only if higher features are truly needed, and exit cleanly with an upgrade hint otherwise.
+- Strict mode `set -Eeuo pipefail`; `main "$@"` pattern; no top-level side effects.
+
+**Portability**
+- Prefer POSIX utilities; when GNU and BSD diverge, detect OS once via `uname -s` (`Linux` vs `Darwin`) and branch at the lowest possible level.
+- Known divergences to handle: `sed -i ''` (BSD) vs `sed -i` (GNU); `date -u -d` (GNU) vs `date -u -j -f` (BSD); `readlink -f`, `realpath`, GNU `getopt`, `stat`, `mktemp --tmpdir`, `grep -P` are all unsafe — implement portable shims.
+- Probe every external tool with `command -v`; fail fast with an actionable message listing what is missing and how to install it per OS (`apt`, `brew`, …).
+- Default install paths handle macOS `/opt/homebrew` and `/usr/local` as well as Linux `/usr/local` / `$XDG_*`.
+
+**Quality**
+- `shellcheck --shell=bash` clean.
+- All variables quoted; `[[ ... ]]` is fine, but avoid `=~` regex differences between bash versions.
+
+**UX & safety**
+- `--help` and `--version`; meaningful exit codes; errors to stderr, data to stdout.
+- Temp files via portable `mktemp` (no `--tmpdir`); cleaned up via `trap ... EXIT`.
+- Document required tools and minimum versions (`bash`, `awk`, `sed`, `grep`, `curl`) in the script header.
+
+**Testing**
+- CI runs the script and `shellcheck` on `ubuntu-latest`; both must stay green before merge.
 ```
 
 ### Create the spec
@@ -118,7 +239,7 @@ Use **`/speckit-clarify`** before `/speckit-plan` for structured, coverage-based
 Use the **`/speckit-plan`** command to provide your tech stack and architecture choices.
 
 ```bash
-/speckit-plan The application uses Vite with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
+/speckit-plan The application uses Golang with minimal number of libraries. Use vanilla HTML, CSS, and JavaScript as much as possible. Images are not uploaded anywhere and metadata is stored in a local SQLite database.
 ```
 
 ### Break down into tasks
@@ -129,28 +250,12 @@ Use **`/speckit-tasks`** to create an actionable task list from your implementat
 /speckit-tasks
 ```
 
-### Generate quality checklists (optional)
-
-Use **`/speckit-checklist`** to generate custom quality checklists that validate requirements completeness, clarity, and consistency ("unit tests for English").
-
-```bash
-/speckit-checklist
-```
-
 ### Cross-artifact analysis (optional, recommended)
 
 Use **`/speckit-analyze`** after `/speckit-tasks` and before `/speckit-implement` to run cross-artifact consistency and coverage analysis across the constitution, spec, plan, and tasks.
 
 ```bash
 /speckit-analyze
-```
-
-### Convert tasks to GitHub issues (optional)
-
-Use **`/speckit-taskstoissues`** to turn the generated task list into GitHub issues for tracking and execution.
-
-```bash
-/speckit-taskstoissues
 ```
 
 ### Execute implementation
